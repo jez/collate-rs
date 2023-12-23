@@ -1,27 +1,19 @@
-.PHONY: target/release/collate
-target/release/collate:
+.PHONY: release
+target/release/collate target/release/uncollate:
 	cargo build --release
 
-.PHONY: target/release/uncollate
-target/release/uncollate:
-	cargo build --release
-
-.PHONY: target/debug/collate
-target/debug/collate:
-	cargo build
-
-.PHONY: target/debug/uncollate
-target/debug/uncollate:
+.PHONY: debug
+target/debug/collate target/debug/uncollate:
 	cargo build
 
 .PHONY: install
 install:
 	cargo install --path .
 
-test/%.txt.collate.exp: test/%.txt target/debug/collate
+test/%.txt.collate.exp: test/%.txt debug
 	target/debug/collate $< > $@ && git add --intent-to-add $@
 
-test/%.txt.uncollate.exp: test/%.txt target/debug/uncollate
+test/%.txt.uncollate.exp: test/%.txt debug
 	target/debug/uncollate $< > $@ && git add --intent-to-add $@
 
 collate_tests := $(patsubst %.txt,%.txt.collate.exp,$(wildcard test/*.txt))
